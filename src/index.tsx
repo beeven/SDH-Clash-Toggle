@@ -8,10 +8,11 @@ import {
   PanelSectionRow,
   Router,
   ServerAPI,
+  Toggle,
   showContextMenu,
   staticClasses,
 } from "decky-frontend-lib";
-import { VFC } from "react";
+import { VFC, useState } from "react";
 import { FaShip } from "react-icons/fa";
 
 import logo from "../assets/logo.png";
@@ -20,9 +21,22 @@ import logo from "../assets/logo.png";
 //   left: number;
 //   right: number;
 // }
+interface ToggleClashArgs {
+  turnOn: boolean;
+}
 
 const Content: VFC<{ serverAPI: ServerAPI }> = ({}) => {
   // const [result, setResult] = useState<number | undefined>();
+
+  const [checked, setChecked] = useState<Boolean | undefined>(false);
+  const onCheckChanged = async (e: boolean) => {
+    const result = await serverAPI.callPluginMethod<ToggleClashArgs, boolean>(
+      "toggleClash", { turnOn: true }
+    );
+    if (result.success) {
+      setChecked(result.result);
+    }
+  };
 
   // const onClick = async () => {
   //   const result = await serverAPI.callPluginMethod<AddMethodArgs, number>(
@@ -55,6 +69,17 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({}) => {
         >
           Server says yolo
         </ButtonItem>
+      </PanelSectionRow>
+      <PanelSectionRow>
+        <div>
+        <Toggle
+          label="A Toggle"
+          description={`Description: ${checked}`}
+          checked={checked}
+          onChange={(e) => onCheckChanged(e)}
+        />
+        </div>
+        <div>Clash status: {checked}</div>
       </PanelSectionRow>
 
       <PanelSectionRow>

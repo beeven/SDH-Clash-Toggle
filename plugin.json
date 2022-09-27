@@ -1,5 +1,5 @@
 {
-  "name": "Clash Toggle",
+  "name": "ClashToggle",
   "author": "Beeven Yip",
   "flags": ["debug", "_root"],
   "publish": {

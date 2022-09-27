@@ -17,39 +17,48 @@ import { FaShip } from "react-icons/fa";
 
 import logo from "../assets/logo.png";
 
-// interface AddMethodArgs {
-//   left: number;
-//   right: number;
-// }
+interface AddMethodArgs {
+  left: number;
+  right: number;
+}
 interface ToggleClashArgs {
-  turnOn: boolean;
+  turn_on: boolean;
 }
 
-const Content: VFC<{ serverAPI: ServerAPI }> = ({}) => {
-  // const [result, setResult] = useState<number | undefined>();
-
-  const [checked, setChecked] = useState<Boolean | undefined>(false);
+const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
+  const [result, setResult] = useState<number | undefined>();
+  const [status, setStatus] = useState("Unchecked");
+  const [checked, setChecked] = useState(false);
   const onCheckChanged = async (e: boolean) => {
+    //setChecked(e);
+    setStatus(`Param: ${e}. Waiting for server...`);
+
     const result = await serverAPI.callPluginMethod<ToggleClashArgs, boolean>(
-      "toggleClash", { turnOn: true }
+      "toggle_clash", { turn_on: true }
     );
     if (result.success) {
       setChecked(result.result);
+      setStatus(`Result: ${result.result}`);
+    }
+    else {
+      setStatus(result.result);
     }
   };
 
-  // const onClick = async () => {
-  //   const result = await serverAPI.callPluginMethod<AddMethodArgs, number>(
-  //     "add",
-  //     {
-  //       left: 2,
-  //       right: 2,
-  //     }
-  //   );
-  //   if (result.success) {
-  //     setResult(result.result);
-  //   }
-  // };
+
+
+  const add = async () => {
+    const result = await serverAPI.callPluginMethod<AddMethodArgs,number>(
+      "add",
+      {
+        left: 2,
+        right: 2,
+      }
+    );
+    if (result.success) {
+      setResult(result.result);
+    }
+  };
 
   return (
     <PanelSection title="Panel Section">
@@ -58,10 +67,10 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({}) => {
           layout="below"
           onClick={(e) =>
             showContextMenu(
-              <Menu label="Menu" cancelText="CAAAANCEL" onCancel={() => {}}>
-                <MenuItem onSelected={() => {}}>Item #1</MenuItem>
-                <MenuItem onSelected={() => {}}>Item #2</MenuItem>
-                <MenuItem onSelected={() => {}}>Item #3</MenuItem>
+              <Menu label="Menu" cancelText="CAAAANCEL" onCancel={() => { }}>
+                <MenuItem onSelected={() => { }}>Item #1</MenuItem>
+                <MenuItem onSelected={() => { }}>Item #2</MenuItem>
+                <MenuItem onSelected={() => { }}>Item #3</MenuItem>
               </Menu>,
               e.currentTarget ?? window
             )
@@ -72,20 +81,29 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({}) => {
       </PanelSectionRow>
       <PanelSectionRow>
         <div>
-        <Toggle
-          label="A Toggle"
-          description={`Description: ${checked}`}
-          checked={checked}
-          onChange={(e) => onCheckChanged(e)}
-        />
+          <Toggle
+            value={checked}
+            onChange={(e) => onCheckChanged(e)}
+          />
         </div>
-        <div>Clash status: {checked}</div>
+        <div>
+          {status}
+        </div>
       </PanelSectionRow>
 
       <PanelSectionRow>
         <div style={{ display: "flex", justifyContent: "center" }}>
           <img src={logo} />
         </div>
+      </PanelSectionRow>
+
+      <PanelSectionRow>
+        <ButtonItem layout="below"
+          onClick={() => {
+            add();
+          }}>
+          Add
+        </ButtonItem>
       </PanelSectionRow>
 
       <PanelSectionRow>
@@ -120,7 +138,7 @@ export default definePlugin((serverApi: ServerAPI) => {
   });
 
   return {
-    title: <div className={staticClasses.Title}>Example Plugin</div>,
+    title: <div className={staticClasses.Title}>ClashToggle</div>,
     content: <Content serverAPI={serverApi} />,
     icon: <FaShip />,
     onDismount() {

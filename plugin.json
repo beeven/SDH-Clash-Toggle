@@ -1,7 +1,7 @@
 {
   "name": "ClashToggle",
   "author": "Beeven Yip",
-  "flags": ["debug", "_root"],
+  "flags": ["root"],
   "publish": {
     "tags": ["template", "root", "dnu"],
     "description": "A Decky plugin to toggle Clash.",

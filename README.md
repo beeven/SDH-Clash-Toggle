@@ -1,3 +1,15 @@
+# Clash Toggle
+
+
+## Install
+Install decky-loader
+
+Install clash, setup a .service file in /etc/systemd/system/clash.service
+Prepare 2 config files, namely clash.http.yaml, clash.ebpf.yaml.
+
+
+
+
 # React-Frontend Plugin Template [![Chat](https://img.shields.io/badge/chat-on%20discord-7289da.svg)](https://discord.gg/ZU74G2NJzk)
 
 
